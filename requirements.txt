@@ -1,5 +1,5 @@
 google-generativeai
-torch
+logging
 diffusers
 git+https://github.com/openai/CLIP.git
 open_clip_torch
