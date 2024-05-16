@@ -21,17 +21,30 @@ def query_stabilitydiff(payload, headers):
     response = requests.post(API_URL, headers=headers, json=payload)
     return response.content
 
-def imageEncoder(img):
-    img1 = Image.fromarray(img).convert('RGB')
-    img1 = preprocess(img1).unsqueeze(0).to(device)
-    img1 = model.encode_image(img1)
-    return img1
+#def imageEncoder(img):
+#    img1 = Image.fromarray(img).convert('RGB')
+#    img1 = preprocess(img1).unsqueeze(0).to(device)
+#    img1 = model.encode_image(img1)
+#    return img1
+def imageEncoder(data, headers):
+   API_URL = "https://api-inference.huggingface.co/models/helenai/CLIP-ViT-B-16-plus-240"
 
-def generateScore(image1, image2):
+   with open(data["image_path"], "rb") as f:
+	   img = f.read()
+        
+   payload={
+		"parameters": data["parameters"],
+		"inputs": base64.b64encode(img).decode("utf-8")
+	}
+   
+   response = requests.post(API_URL, headers=headers, json=payload)
+   return response.json()
+
+def generateScore(image1, image2, headers):
     test_img = cv2.imread(image1, cv2.IMREAD_UNCHANGED)
     data_img = cv2.imread(image2, cv2.IMREAD_UNCHANGED)
-    img1 = imageEncoder(test_img)
-    img2 = imageEncoder(data_img)
+    img1 = imageEncoder(test_img, headers)
+    img2 = imageEncoder(data_img, headers)
     cos_scores = util.pytorch_cos_sim(img1, img2)
     score = round(float(cos_scores[0][0])*100, 2)
     return score
@@ -100,7 +113,7 @@ if uploaded_file is not None:
    response_text = []
    my_progress = 30
    for i in range(1, 6):
-      mytext = "Generating the description of the image {i}..."
+      mytext = f"Generating the description of the image {i}..."
       my_bar.progress(my_progress, text=mytext)
       if i == 1:
          prompt = "Write a detail description based on this picture."
@@ -151,17 +164,11 @@ if uploaded_file is not None:
    col1, col2, col3, col4, col5 = st.columns(5)
 
    # image processing model
-   device = "cuda" if torch.cuda.is_available() else "cpu"
-   model, _, preprocess = open_clip.create_model_and_transforms('ViT-B-16-plus-240', pretrained="laion400m_e32")
-   model.to(device)
-
-   items = os.listdir()
-
    similarity_results = []
    ave = 0
    i = 1
    for each_image in save_list:
-      result = generateScore(uploaded_file.name, each_image)
+      result = generateScore(uploaded_file.name, each_image, headers)
       #print (compare_image_path, result, '%')
       similarity_results.append(result)
       ave += result
