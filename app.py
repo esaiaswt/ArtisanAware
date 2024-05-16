@@ -65,7 +65,8 @@ if uploaded_file is not None:
    logging.disable_progress_bar()   # Prevent Streamlit TQDM output error 
    modelid = "CompVis/stable-diffusion-v1-4"
    device = "cuda" if torch.cuda.is_available() else "cpu"
-   stable_diffusion_model = StableDiffusionPipeline.from_pretrained(modelid, revision="fp16", torch_dtype=torch.float16)
+   #stable_diffusion_model = StableDiffusionPipeline.from_pretrained(modelid, revision="fp16", torch_dtype=torch.float16)
+   stable_diffusion_model = StableDiffusionPipeline.from_pretrained(modelid)
    stable_diffusion_model.to(device)
  
    save_name = ""
