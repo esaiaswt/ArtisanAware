@@ -63,7 +63,7 @@ if uploaded_file is not None:
    # Download stable diffusion model from hugging face
    modelid = "CompVis/stable-diffusion-v1-4"
    device = "cuda"
-   stable_diffusion_model = StableDiffusionPipeline.from_pretrained(modelid, revision="fp16", torch_dtype=torch.float16, use_auth_token=HF_TOKEN_KEY, verbose = False)
+   stable_diffusion_model = StableDiffusionPipeline.from_pretrained(modelid, revision="fp16", torch_dtype=torch.float16, use_auth_token=HF_TOKEN_KEY, safety_checker=None)
    stable_diffusion_model.to(device)
    # if one wants to set `leave=False`
    stable_diffusion_model.set_progress_bar_config(leave=False)
