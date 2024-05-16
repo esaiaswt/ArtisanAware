@@ -75,19 +75,20 @@ if uploaded_file is not None:
       # Save the generated image
       save_name = "gen_image" + str(i) + ".png"
       image.save(save_name)
+      st.write(save_name)
 
    st.title("Generated Images:")
    #col1, col2, col3, col4, col5 = st.columns(5)
-   col1, col2, col3 = st.columns(3)
+   #col1, col2, col3 = st.columns(3)
 
-   with col1:
-      st.image('gen_image1.png', 'Generated Image 1')
+   #with col1:
+   #   st.image('gen_image1.png', 'Generated Image 1')
 
-   with col2:
-      st.image('gen_image2.png', 'Generated Image 2')
+   #with col2:
+   #   st.image('gen_image2.png', 'Generated Image 2')
 
-   with col3:
-      st.image('gen_image3.png', 'Generated Image 3')
+   #with col3:
+   #   st.image('gen_image3.png', 'Generated Image 3')
 
    #with col4:
    #   st.image('gen_image4.png', 'Generated Image 4')
