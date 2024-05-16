@@ -5,14 +5,6 @@ import textwrap
 
 import google.generativeai as genai
 
-from IPython.display import display
-from IPython.display import Markdown
-
-from google.colab import files
-
-# Used to securely store your API key
-from google.colab import userdata
-
 import PIL.Image
 
 # Machine Learning libraries
