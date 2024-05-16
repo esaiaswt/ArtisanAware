@@ -14,6 +14,7 @@ from diffusers import StableDiffusionPipeline
 
 import os
 import matplotlib.pyplot as plt
+import streamlit as st
 
 # 1.3 Retieve Google API key
 os.environ["G_Key"] = st.secrets["G_Key"]
