@@ -16,6 +16,14 @@ import os
 import matplotlib.pyplot as plt
 import streamlit as st
 
+# Generate image from text
+def generate_image(prompt):
+    """ This function generate image from a text with stable diffusion"""
+    with autocast(device):
+      image = stable_diffusion_model(prompt,guidance_scale=8.5)["images"][0]
+
+    return image
+
 # 1.3 Retieve Google API key
 os.environ["G_Key"] = st.secrets["G_Key"]
 os.environ["H_Key"] = st.secrets["H_Key"]
@@ -40,24 +48,43 @@ if "tokens_count_key" not in st.session_state:
 
 uploaded_file = st.file_uploader("Upload Image", type = ['jpg', 'jpeg', 'png', 'bmp'], key=st.session_state["file_uploader_key"],)
 if uploaded_file is not None:
-  st.session_state["file_uploader_key"] += 1 # https://discuss.streamlit.io/t/are-there-any-ways-to-clear-file-uploader-values-without-using-streamlit-form/40903/2
+   st.session_state["file_uploader_key"] += 1 # https://discuss.streamlit.io/t/are-there-any-ways-to-clear-file-uploader-values-without-using-streamlit-form/40903/2
 
-st.image(uploaded_file, uploaded_file.name)
+   st.image(uploaded_file, uploaded_file.name)
 
-st.title("Generated Images:")
-col1, col2, col3, col4, col5 = st.columns(5)
+   model_genai = genai.GenerativeModel('gemini-pro-vision')
+   response = model_genai.generate_content(["Write a detail description based on this picture.", img], stream=True)
+   response.resolve()
+   st.write(response.text)
 
-with col1:
-   st.image('gen_image1.png', 'Generated Image 1')
+   # Download stable diffusion model from hugging face
+   modelid = "CompVis/stable-diffusion-v1-4"
+   device = "cuda"
+   stable_diffusion_model = StableDiffusionPipeline.from_pretrained(modelid, revision="fp16", torch_dtype=torch.float16, use_auth_token=HF_TOKEN_KEY)
+   stable_diffusion_model.to(device)
 
-with col2:
-   st.image('gen_image2.png', 'Generated Image 2')
+   save_name = ""
+   for i in range(1, 6):
+      image = generate_image(response.text)
 
-with col3:
-   st.image('gen_image3.png', 'Generated Image 3')
+      # Save the generated image
+      save_name = "gen_image" + str(i) + ".png"
+      image.save(save_name)
 
-with col4:
-   st.image('gen_image4.png', 'Generated Image 4')
+   st.title("Generated Images:")
+   col1, col2, col3, col4, col5 = st.columns(5)
 
-with col5:
-   st.image('gen_image5.png', 'Generated Image 5')
+   with col1:
+      st.image('gen_image1.png', 'Generated Image 1')
+
+   with col2:
+      st.image('gen_image2.png', 'Generated Image 2')
+
+   with col3:
+      st.image('gen_image3.png', 'Generated Image 3')
+
+   with col4:
+      st.image('gen_image4.png', 'Generated Image 4')
+
+   with col5:
+      st.image('gen_image5.png', 'Generated Image 5')
