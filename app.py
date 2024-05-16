@@ -52,8 +52,10 @@ if uploaded_file is not None:
 
    st.image(uploaded_file, uploaded_file.name)
 
+   img = PIL.Image.open(uploaded_file)
+
    model_genai = genai.GenerativeModel('gemini-pro-vision')
-   response = model_genai.generate_content(["Write a detail description based on this picture.", uploaded_file], stream=True)
+   response = model_genai.generate_content(["Write a detail description based on this picture.", img], stream=True)
    response.resolve()
    st.write(response.text)
 
