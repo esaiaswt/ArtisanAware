@@ -7,9 +7,6 @@ import requests
 import io
 from PIL import Image
 
-import torch
-import open_clip
-import cv2
 from sentence_transformers import util
 import time
 
@@ -30,7 +27,7 @@ def imageEncoder(data, headers):
    API_URL = "https://api-inference.huggingface.co/models/helenai/CLIP-ViT-B-16-plus-240"
 
    with open(data["image_path"], "rb") as f:
-	   img = f.read()
+      img = f.read()
         
    payload={
 		"parameters": data["parameters"],
@@ -41,10 +38,8 @@ def imageEncoder(data, headers):
    return response.json()
 
 def generateScore(image1, image2, headers):
-    test_img = cv2.imread(image1, cv2.IMREAD_UNCHANGED)
-    data_img = cv2.imread(image2, cv2.IMREAD_UNCHANGED)
-    img1 = imageEncoder(test_img, headers)
-    img2 = imageEncoder(data_img, headers)
+    img1 = imageEncoder(image1, headers)
+    img2 = imageEncoder(image2, headers)
     cos_scores = util.pytorch_cos_sim(img1, img2)
     score = round(float(cos_scores[0][0])*100, 2)
     return score
