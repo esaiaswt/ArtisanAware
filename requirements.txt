@@ -1,0 +1,6 @@
+google-generativeai
+sentence_transformers
+torch
+open-clip-torch-any-py3
+opencv-python
+
