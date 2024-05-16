@@ -57,11 +57,12 @@ if uploaded_file is not None:
    model_genai = genai.GenerativeModel('gemini-pro-vision')
    response = model_genai.generate_content(["Write a detail description based on this picture.", img], stream=True)
    response.resolve()
+   st.write("Generated Description: ")
    st.write(response.text)
 
    # Download stable diffusion model from hugging face
    modelid = "CompVis/stable-diffusion-v1-4"
-   device = "cuda"
+   device = "cpu" #"cuda"
    stable_diffusion_model = StableDiffusionPipeline.from_pretrained(modelid, revision="fp16", torch_dtype=torch.float16, use_auth_token=HF_TOKEN_KEY)
    stable_diffusion_model.to(device)
 
