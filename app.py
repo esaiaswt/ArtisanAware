@@ -55,44 +55,54 @@ if uploaded_file is not None:
 
    img = PIL.Image.open(uploaded_file)
 
+   my_bar = st.progress(0, text="Starting the model...")
+
    model_genai = genai.GenerativeModel('gemini-pro-vision')
+
+   my_bar.progress(10, text="Generating the description of the image...")
    response = model_genai.generate_content(["Write a detail description based on this picture.", img], stream=True)
    response.resolve()
    st.write("Generated Description: ")
    st.write(response.text)
 
    # Download stable diffusion model from hugging face
+   my_bar.progress(20, text="Loading Diffusor...")
    logging.disable_progress_bar()   # Prevent Streamlit TQDM output error 
    modelid = "CompVis/stable-diffusion-v1-4"
-   device = "cuda" if torch.cuda.is_available() else "cpu"
+   device = "cpu"
    #stable_diffusion_model = StableDiffusionPipeline.from_pretrained(modelid, revision="fp16", torch_dtype=torch.float16)
-   stable_diffusion_model = StableDiffusionPipeline.from_pretrained(modelid)
+   stable_diffusion_model = StableDiffusionPipeline.from_pretrained(modelid) # remove fp16 and float16 to default to CPU setting
    stable_diffusion_model.to(device)
  
+   my_progress = 30
+   my_bar.progress(30, text="Generating Images...")
    save_name = ""
-   for i in range(1, 4):
+   for i in range(1, 6):
       image = generate_image(response.text)
 
       # Save the generated image
       save_name = "gen_image" + str(i) + ".png"
       image.save(save_name)
-      st.write(save_name)
+      #st.write(save_name)
+      my_progress += 14
+      mytext = "Generated " +  save_name + "... Generating next..."
+      my_bar.progress(my_progress, text=mytext)
 
+   my_bar.progress(100, text="Completed.")
    st.title("Generated Images:")
-   #col1, col2, col3, col4, col5 = st.columns(5)
-   #col1, col2, col3 = st.columns(3)
+   col1, col2, col3, col4, col5 = st.columns(5)
 
-   #with col1:
-   #   st.image('gen_image1.png', 'Generated Image 1')
+   with col1:
+      st.image('gen_image1.png', 'Generated Image 1')
 
-   #with col2:
-   #   st.image('gen_image2.png', 'Generated Image 2')
+   with col2:
+      st.image('gen_image2.png', 'Generated Image 2')
 
-   #with col3:
-   #   st.image('gen_image3.png', 'Generated Image 3')
+   with col3:
+      st.image('gen_image3.png', 'Generated Image 3')
 
-   #with col4:
-   #   st.image('gen_image4.png', 'Generated Image 4')
+   with col4:
+      st.image('gen_image4.png', 'Generated Image 4')
 
-   #with col5:
-   #   st.image('gen_image5.png', 'Generated Image 5')
+   with col5:
+      st.image('gen_image5.png', 'Generated Image 5')
