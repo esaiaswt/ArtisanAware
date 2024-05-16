@@ -65,16 +65,11 @@ if uploaded_file is not None:
    logging.disable_progress_bar()   # Prevent Streamlit TQDM output error 
    modelid = "CompVis/stable-diffusion-v1-4"
    device = "cuda"
-   stable_diffusion_model = StableDiffusionPipeline.from_pretrained(modelid, revision="fp16", torch_dtype=torch.float16, use_auth_token=HF_TOKEN_KEY, safety_checker=None)
+   stable_diffusion_model = StableDiffusionPipeline.from_pretrained(modelid, variant="fp16", torch_dtype=torch.float16, use_auth_token=HF_TOKEN_KEY, safety_checker=None)
    stable_diffusion_model.to(device)
-   # if one wants to set `leave=False`
-   stable_diffusion_model.set_progress_bar_config(leave=False)
-
-   # if one wants to disable `tqdm`
-   stable_diffusion_model.set_progress_bar_config(disable=True)
-
+ 
    save_name = ""
-   for i in range(1, 6):
+   for i in range(1, 4):
       image = generate_image(response.text)
 
       # Save the generated image
@@ -82,7 +77,8 @@ if uploaded_file is not None:
       image.save(save_name)
 
    st.title("Generated Images:")
-   col1, col2, col3, col4, col5 = st.columns(5)
+   #col1, col2, col3, col4, col5 = st.columns(5)
+   col1, col2, col3 = st.columns(3)
 
    with col1:
       st.image('gen_image1.png', 'Generated Image 1')
@@ -93,8 +89,8 @@ if uploaded_file is not None:
    with col3:
       st.image('gen_image3.png', 'Generated Image 3')
 
-   with col4:
-      st.image('gen_image4.png', 'Generated Image 4')
+   #with col4:
+   #   st.image('gen_image4.png', 'Generated Image 4')
 
-   with col5:
-      st.image('gen_image5.png', 'Generated Image 5')
+   #with col5:
+   #   st.image('gen_image5.png', 'Generated Image 5')
