@@ -62,7 +62,7 @@ if uploaded_file is not None:
    st.write(response.text)
 
    # Download stable diffusion model from hugging face
-   logging.disable_progress_bar()   # Prevent Streamlit TQDM output error
+   logging.disable_progress_bar()   # Prevent Streamlit TQDM output error 
    modelid = "CompVis/stable-diffusion-v1-4"
    device = "cuda"
    stable_diffusion_model = StableDiffusionPipeline.from_pretrained(modelid, revision="fp16", torch_dtype=torch.float16, use_auth_token=HF_TOKEN_KEY, safety_checker=None)
